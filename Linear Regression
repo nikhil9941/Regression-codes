@@ -1,0 +1,52 @@
+import numpy as np  
+import matplotlib.pyplot as plt  
+import pandas as pd  # Import pandas to handle CSV files
+
+def estimate_coeff(p, q):  
+    # Estimate the total number of points or observations  
+    n1 = np.size(p)  
+    # Calculate the mean of the p and q vectors  
+    m_p = np.mean(p)  
+    m_q = np.mean(q)  
+    # Calculate the cross deviation and deviation about p  
+    SS_pq = np.sum(q * p) - n1 * m_q * m_p  
+    SS_pp = np.sum(p * p) - n1 * m_p * m_p  
+    # Calculate the regression coefficients  
+    b_1 = SS_pq / SS_pp  
+    b_0 = m_q - b_1 * m_p  
+    
+    return (b_0, b_1)  
+
+def plot_regression_line(p, q, b):  
+    # Plot the actual points or observations as a scatter plot  
+    plt.scatter(p, q, color="m", marker="o", s=30)  
+    
+    # Calculate the predicted response vector  
+    q_pred = b[0] + b[1] * p  
+  
+    # Plot the regression line  
+    plt.plot(p, q_pred, color="g")  
+    # Add labels  
+    plt.xlabel('p')  
+    plt.ylabel('q')  
+    
+    # Show the plot  
+    plt.show()  
+
+def main():  
+    # Read the dataset from a CSV file
+    data = pd.read_csv('data.csv')  # Replace 'data.csv' with your file path
+    
+    # Assume the CSV file has columns 'p' and 'q'
+    p = np.array(data['p'])  
+    q = np.array(data['q'])  
+    
+    # Estimate the coefficients  
+    b = estimate_coeff(p, q)  
+    print(f"Estimated coefficients are:\nb_0 = {b[0]}\nb_1 = {b[1]}")  
+    
+    # Plot the regression line  
+    plot_regression_line(p, q, b)  
+
+if __name__ == "__main__":  
+    main()  
